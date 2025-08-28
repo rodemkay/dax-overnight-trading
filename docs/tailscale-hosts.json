@@ -1,0 +1,11 @@
+﻿{
+    "updated":  "2025-08-11T08:39:46.3099948+02:00",
+    "hosts":  {
+                  "ACER Laptop":  "100.64.128.121",
+                  "WIN11NEU":  "100.122.144.89",
+                  "Ryzenserver":  "100.89.207.122"
+              },
+    "workspacePaths":  [
+                           "X:\\Users\\rodemkay\\Desktop\\daxovernight_workspace.code-workspace"
+                       ]
+}

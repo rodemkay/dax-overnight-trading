@@ -1,0 +1,18 @@
+{
+  "name": "daxovernight",
+  "version": "1.0.0",
+  "description": "**Hauptdatei:** `x:/portabel/MetaTrader5/MQL5/Experts/Don/don_gpt.mq5`\r - Version: 2.00\r - Program Name: \"don_gpt\"\r - Entwicklungsstand: Aktiv",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@playwright/test": "^1.54.2"
+  }
+}

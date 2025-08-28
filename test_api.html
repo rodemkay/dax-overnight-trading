@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Test - DAX Overnight</title>
+    <style>
+        body {
+            font-family: monospace;
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+            background: #1e1e1e;
+            color: #d4d4d4;
+        }
+        h1 { color: #4ec9b0; }
+        h2 { color: #9cdcfe; margin-top: 30px; }
+        .test-section {
+            background: #2d2d30;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+            border: 1px solid #3e3e42;
+        }
+        button {
+            background: #007acc;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 5px;
+            cursor: pointer;
+            border-radius: 3px;
+            font-size: 14px;
+        }
+        button:hover { background: #005a9e; }
+        .response {
+            background: #1e1e1e;
+            padding: 15px;
+            margin-top: 15px;
+            border-radius: 3px;
+            white-space: pre-wrap;
+            font-size: 12px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .success { color: #4ec9b0; }
+        .error { color: #f48771; }
+        input {
+            background: #3e3e42;
+            border: 1px solid #585858;
+            color: #d4d4d4;
+            padding: 8px;
+            margin: 5px;
+            width: 200px;
+            border-radius: 3px;
+        }
+        select {
+            background: #3e3e42;
+            border: 1px solid #585858;
+            color: #d4d4d4;
+            padding: 8px;
+            margin: 5px;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔧 DAX Overnight - API Test Interface</h1>
+    
+    <div class="test-section">
+        <h2>📋 Konfiguration</h2>
+        <div>
+            <label>Token: </label>
+            <input type="text" id="token" value="250277100311270613" />
+        </div>
+        <div>
+            <label>API URL: </label>
+            <input type="text" id="apiUrl" value="https://lic.prophelper.org/api/db_api.php" style="width: 400px;" />
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>🔍 Test 1: Verbindungstest</h2>
+        <button onclick="testConnection()">Verbindung testen</button>
+        <div id="test1Response" class="response"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>📊 Test 2: Tabellen anzeigen</h2>
+        <button onclick="showTables()">Tabellen auflisten</button>
+        <div id="test2Response" class="response"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>📝 Test 3: Benutzerdefinierte Query</h2>
+        <textarea id="customQuery" style="width: 100%; height: 60px; background: #3e3e42; color: #d4d4d4; border: 1px solid #585858; padding: 8px;">SELECT * FROM lnative LIMIT 5</textarea>
+        <br>
+        <button onclick="executeQuery()">Query ausführen</button>
+        <div id="test3Response" class="response"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>🔐 Test 4: Lizenz-Check</h2>
+        <input type="text" id="accountNumber" placeholder="Account Nummer" />
+        <button onclick="checkLicense()">Lizenz prüfen</button>
+        <div id="test4Response" class="response"></div>
+    </div>
+
+    <script>
+        function getConfig() {
+            return {
+                token: document.getElementById('token').value,
+                apiUrl: document.getElementById('apiUrl').value
+            };
+        }
+
+        async function makeRequest(action, additionalData = {}) {
+            const config = getConfig();
+            const data = {
+                token: config.token,
+                action: action,
+                ...additionalData
+            };
+
+            try {
+                const response = await fetch(config.apiUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                const text = await response.text();
+                
+                try {
+                    const json = JSON.parse(text);
+                    return { success: response.ok, data: json, raw: text };
+                } catch (e) {
+                    return { success: false, error: 'Invalid JSON response', raw: text };
+                }
+            } catch (error) {
+                return { success: false, error: error.message };
+            }
+        }
+
+        async function testConnection() {
+            const responseDiv = document.getElementById('test1Response');
+            responseDiv.innerHTML = 'Teste Verbindung...';
+            
+            const result = await makeRequest('test');
+            
+            if (result.success && result.data) {
+                responseDiv.innerHTML = '<span class="success">✅ Verbindung erfolgreich!</span>\n\n' + 
+                    JSON.stringify(result.data, null, 2);
+                responseDiv.className = 'response success';
+            } else {
+                responseDiv.innerHTML = '<span class="error">❌ Verbindungsfehler:</span>\n' + 
+                    (result.error || result.raw);
+                responseDiv.className = 'response error';
+            }
+        }
+
+        async function showTables() {
+            const responseDiv = document.getElementById('test2Response');
+            responseDiv.innerHTML = 'Lade Tabellen...';
+            
+            const result = await makeRequest('tables');
+            
+            if (result.success && result.data) {
+                responseDiv.innerHTML = '<span class="success">✅ Tabellen gefunden:</span>\n\n' + 
+                    JSON.stringify(result.data, null, 2);
+                responseDiv.className = 'response success';
+            } else {
+                responseDiv.innerHTML = '<span class="error">❌ Fehler:</span>\n' + 
+                    (result.error || result.raw);
+                responseDiv.className = 'response error';
+            }
+        }
+
+        async function executeQuery() {
+            const responseDiv = document.getElementById('test3Response');
+            const query = document.getElementById('customQuery').value;
+            
+            responseDiv.innerHTML = 'Führe Query aus...';
+            
+            const result = await makeRequest('query', { query: query });
+            
+            if (result.success && result.data) {
+                responseDiv.innerHTML = '<span class="success">✅ Query erfolgreich:</span>\n\n' + 
+                    JSON.stringify(result.data, null, 2);
+                responseDiv.className = 'response success';
+            } else {
+                responseDiv.innerHTML = '<span class="error">❌ Query-Fehler:</span>\n' + 
+                    (result.error || result.raw);
+                responseDiv.className = 'response error';
+            }
+        }
+
+        async function checkLicense() {
+            const responseDiv = document.getElementById('test4Response');
+            const account = document.getElementById('accountNumber').value;
+            
+            if (!account) {
+                responseDiv.innerHTML = '<span class="error">❌ Bitte Account-Nummer eingeben!</span>';
+                return;
+            }
+            
+            responseDiv.innerHTML = 'Prüfe Lizenz...';
+            
+            const result = await makeRequest('license_check', { account: account });
+            
+            if (result.success && result.data) {
+                const hasLicense = result.data.has_license ? '✅ Aktive Lizenz gefunden' : '❌ Keine aktive Lizenz';
+                responseDiv.innerHTML = `<span class="${result.data.has_license ? 'success' : 'error'}">${hasLicense}</span>\n\n` + 
+                    JSON.stringify(result.data, null, 2);
+                responseDiv.className = 'response';
+            } else {
+                responseDiv.innerHTML = '<span class="error">❌ Fehler:</span>\n' + 
+                    (result.error || result.raw);
+                responseDiv.className = 'response error';
+            }
+        }
+
+        // Auto-Test beim Laden
+        window.onload = function() {
+            console.log('API Test Interface geladen');
+            console.log('Token:', document.getElementById('token').value);
+            console.log('API URL:', document.getElementById('apiUrl').value);
+        };
+    </script>
+</body>
+</html>

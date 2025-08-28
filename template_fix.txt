@@ -1,0 +1,41 @@
+ANLEITUNG ZUM BEHEBEN DER PHP-FEHLER AUF lic.prophelper.org
+
+Die folgenden Fehler müssen in der Datei /var/www/prophelp/data/www/lic.prophelper.org/files/template.inc.php behoben werden:
+
+1. FEHLER in Zeile 710:
+   ALT: items: <?php echo $total_rows; ?>,
+   NEU: items: <?php echo isset($total_rows) ? $total_rows : 0; ?>,
+
+2. FEHLER in Zeile 724:
+   ALT: var arr=<?php echo $cnt; ?>;
+   NEU: var arr=<?php echo isset($cnt) ? json_encode($cnt) : '[]'; ?>;
+
+ALTERNATIVE LÖSUNG:
+Am Anfang der template.inc.php Datei (nach <?php) folgende Zeilen einfügen:
+
+// Initialisiere Variablen um PHP Notices zu vermeiden
+if (!isset($total_rows)) {
+    $total_rows = 0;
+}
+if (!isset($cnt)) {
+    $cnt = array();
+}
+
+FTP-ZUGANGSDATEN:
+- Server: 162.55.90.123
+- Username: prophelp
+- Password: ".Propt333doka?"
+
+MÖGLICHE WEGE ZUR BEHEBUNG:
+1. Per FTP-Client (z.B. FileZilla) verbinden
+2. Zur Datei navigieren: /var/www/prophelp/data/www/lic.prophelper.org/files/template.inc.php
+3. Datei herunterladen, bearbeiten und wieder hochladen
+
+ODER:
+
+Per SSH (falls verfügbar):
+ssh prophelp@162.55.90.123
+cd /var/www/prophelp/data/www/lic.prophelper.org/files
+nano template.inc.php
+# Änderungen vornehmen
+# Speichern mit Ctrl+O, Enter, Ctrl+X

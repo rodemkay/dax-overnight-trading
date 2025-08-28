@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Die DAX Overnight Strategie - Wissenschaftlich fundiert, praktisch bewährt</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Georgia', serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f9f9f9;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        header {
+            background-color: #fff;
+            border-bottom: 4px solid #000;
+            padding: 20px 0;
+            margin-bottom: 40px;
+        }
+        
+        h1 {
+            font-size: 48px;
+            font-weight: 300;
+            letter-spacing: -2px;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            font-size: 18px;
+            color: #666;
+            font-style: italic;
+        }
+        
+        .article {
+            background-color: #fff;
+            padding: 40px;
+            margin-bottom: 40px;
+            border: 1px solid #ddd;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .article h2 {
+            font-size: 32px;
+            margin-bottom: 20px;
+            font-weight: 400;
+            border-bottom: 2px solid #d4af37;
+            padding-bottom: 10px;
+        }
+        
+        .article h3 {
+            font-size: 24px;
+            margin: 30px 0 15px 0;
+            font-weight: 400;
+        }
+        
+        .article p {
+            font-size: 18px;
+            line-height: 1.8;
+            margin-bottom: 20px;
+        }
+        
+        .chart-container {
+            background-color: #f8f8f8;
+            border: 1px solid #ddd;
+            padding: 30px;
+            margin: 30px 0;
+            text-align: center;
+        }
+        
+        .chart-title {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #666;
+        }
+        
+        .timeline {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 40px 20px;
+            background-color: #f0f0f0;
+            margin: 30px 0;
+            position: relative;
+        }
+        
+        .timeline::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 10%;
+            right: 10%;
+            height: 4px;
+            background-color: #d4af37;
+            z-index: 1;
+        }
+        
+        .timeline-item {
+            background-color: #fff;
+            padding: 20px;
+            border: 2px solid #d4af37;
+            z-index: 2;
+            position: relative;
+            text-align: center;
+        }
+        
+        .time-big {
+            font-size: 28px;
+            font-weight: bold;
+            display: block;
+        }
+        
+        .time-label {
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .filter-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin: 30px 0;
+        }
+        
+        .filter-box {
+            background-color: #f8f8f8;
+            padding: 25px;
+            border-left: 4px solid #d4af37;
+        }
+        
+        .filter-box h4 {
+            font-size: 20px;
+            margin-bottom: 10px;
+        }
+        
+        .quote-box {
+            background-color: #fffacd;
+            padding: 30px;
+            margin: 30px 0;
+            border-left: 4px solid #d4af37;
+            font-style: italic;
+            font-size: 20px;
+        }
+        
+        .stats-comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin: 30px 0;
+        }
+        
+        .comparison-box {
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .comparison-box.good {
+            background-color: #e8f5e9;
+            border: 2px solid #4caf50;
+        }
+        
+        .comparison-box.bad {
+            background-color: #ffebee;
+            border: 2px solid #f44336;
+        }
+        
+        .big-icon {
+            font-size: 48px;
+            margin-bottom: 10px;
+        }
+        
+        .cta {
+            background-color: #000;
+            color: #fff;
+            padding: 40px;
+            text-align: center;
+            margin: 40px 0;
+        }
+        
+        .cta h2 {
+            font-size: 32px;
+            margin-bottom: 20px;
+            font-weight: 300;
+        }
+        
+        .cta-button {
+            display: inline-block;
+            background-color: #d4af37;
+            color: #000;
+            padding: 15px 40px;
+            text-decoration: none;
+            font-size: 18px;
+            font-weight: bold;
+            margin-top: 20px;
+            transition: all 0.3s;
+        }
+        
+        .cta-button:hover {
+            background-color: #b8941f;
+            transform: translateY(-2px);
+        }
+        
+        footer {
+            background-color: #333;
+            color: #fff;
+            padding: 30px 0;
+            text-align: center;
+            margin-top: 60px;
+        }
+        
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 32px;
+            }
+            
+            .timeline {
+                flex-direction: column;
+                gap: 20px;
+            }
+            
+            .timeline::before {
+                display: none;
+            }
+            
+            .stats-comparison {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>Die Overnight-Strategie</h1>
+            <p class="subtitle">Warum der DAX nachts besser performt als tagsüber</p>
+        </div>
+    </header>
+    
+    <div class="container">
+        <div class="article">
+            <h2>Das Geheimnis der Nacht</h2>
+            <p>Wussten Sie, dass der DAX einen Großteil seiner Gewinne außerhalb der regulären Handelszeiten erwirtschaftet? Es klingt verrückt, ist aber statistisch belegt: Die Overnight-Performance übertrifft oft die Tagesperformance deutlich.</p>
+            
+            <p>Studien zeigen, dass zwischen 70% und 80% aller DAX-Gewinne der letzten 20 Jahre nachts entstanden sind. Tagsüber? Da wird oft nur hin und her gezappelt.</p>
+        </div>
+        
+        <div class="stats-comparison">
+            <div class="comparison-box good">
+                <div class="big-icon">🌙</div>
+                <h3>Nachts (17:30 - 9:00)</h3>
+                <p>✓ Weniger Volatilität<br>
+                ✓ Klarere Trends<br>
+                ✓ Positive Drift<br>
+                ✓ Weniger Störgeräusche</p>
+            </div>
+            <div class="comparison-box bad">
+                <div class="big-icon">☀️</div>
+                <h3>Tagsüber (9:00 - 17:30)</h3>
+                <p>✗ Hohe Volatilität<br>
+                ✗ Viele Fehlsignale<br>
+                ✗ Emotionale Reaktionen<br>
+                ✗ Nachrichtenchaos</p>
+            </div>
+        </div>
+        
+        <div class="article">
+            <h2>Die Strategie im Detail</h2>
+            
+            <div class="timeline">
+                <div class="timeline-item">
+                    <span class="time-big">18:30</span>
+                    <span class="time-label">KAUF-SIGNAL</span>
+                </div>
+                <div class="timeline-item">
+                    <span class="time-big">09:00</span>
+                    <span class="time-label">TRAILING START</span>
+                </div>
+                <div class="timeline-item">
+                    <span class="time-big">10:00</span>
+                    <span class="time-label">POSITION SCHLIESSEN</span>
+                </div>
+            </div>
+            
+            <h3>Warum funktioniert das?</h3>
+            <p>Die Gründe sind vielfältig und faszinierend:</p>
+            
+            <p><strong>1. Internationale Märkte:</strong> Während wir schlafen, handeln Asien und später die USA. Positive Impulse aus diesen Märkten fließen oft in die DAX-Eröffnung ein.</p>
+            
+            <p><strong>2. Weniger Panik:</strong> Nachts gibt es keine panischen Privatanleger, die bei jeder Schlagzeile verkaufen. Die Profis handeln rationaler.</p>
+            
+            <p><strong>3. Future-Effekt:</strong> Der DAX-Future handelt durchgehend. Die Arbitrage zwischen Future und Kasse sorgt für einen natürlichen Aufwärtsdrift.</p>
+        </div>
+        
+        <div class="quote-box">
+            "Die Börse ist wie ein Spielcasino - nur dass die Chancen nachts besser stehen als tagsüber."
+            <br><small>- Ein erfahrener DAX-Trader</small>
+        </div>
+        
+        <div class="article">
+            <h2>Unsere intelligenten Filter</h2>
+            <p>Natürlich kaufen wir nicht blind jeden Abend. Der EA nutzt clevere Filter, um die Gewinnwahrscheinlichkeit zu maximieren:</p>
+            
+            <div class="filter-grid">
+                <div class="filter-box">
+                    <h4>200er Moving Average</h4>
+                    <p>Wir handeln nur, wenn der DAX über seinem langfristigen Durchschnitt notiert. So schwimmen wir mit dem großen Trend.</p>
+                </div>
+                <div class="filter-box">
+                    <h4>StochRSI Filter</h4>
+                    <p>Dieser Momentum-Indikator hilft uns, überkaufte Situationen zu vermeiden. Nur wenn K > D, steigen wir ein.</p>
+                </div>
+                <div class="filter-box">
+                    <h4>Tagesgewinn-Limit</h4>
+                    <p>Ist der DAX schon über 1% gestiegen? Dann lassen wir die Finger davon. Gier ist kein guter Ratgeber.</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="chart-container">
+            <div class="chart-title">Beispiel: DAX Overnight Performance</div>
+            <p style="font-size: 16px; color: #666;">
+                18:30 Uhr: Einstieg bei 15.500 Punkten<br>
+                21:00 Uhr: US-Märkte positiv, DAX Future steigt<br>
+                06:00 Uhr: Asien schließt freundlich<br>
+                09:00 Uhr: DAX eröffnet bei 15.580 (+80 Punkte)<br>
+                10:00 Uhr: Position geschlossen bei 15.600 (+100 Punkte)
+            </p>
+        </div>
+        
+        <div class="article">
+            <h2>Risk Management ist alles</h2>
+            <p>Ja, die Strategie ist profitabel. Aber wir sind keine Zocker! Deshalb:</p>
+            
+            <p><strong>• Fester Stop-Loss:</strong> 800 Punkte mögen viel klingen, aber nachts brauchen wir den Spielraum. Lieber seltener ausgestoppt werden als zu oft.</p>
+            
+            <p><strong>• AutoLot-Funktion:</strong> Die Positionsgröße passt sich automatisch an Ihr Kapital an. Riskieren Sie nur, was Sie sich leisten können!</p>
+            
+            <p><strong>• Trailing Stop:</strong> Ab 9:00 Uhr sichern wir Gewinne mit einem 100-Punkte-Trailing. So nehmen wir mit, was geht.</p>
+        </div>
+        
+        <div class="cta">
+            <h2>Bereit für die Nachtschicht?</h2>
+            <p>Lassen Sie Ihr Geld arbeiten, während Sie schlafen. Mit dem DAX Overnight EA und RoboForex - komplett kostenlos!</p>
+            <a href="https://www.forexsignale.trade/broker" class="cta-button">Jetzt starten</a>
+        </div>
+    </div>
+    
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 DAX Overnight EA. Risikohinweis: CFDs sind komplexe Instrumente mit hohem Risiko.</p>
+        </div>
+    </footer>
+</body>
+</html>

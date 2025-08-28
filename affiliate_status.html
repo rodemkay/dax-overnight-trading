@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Affiliate Status Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        
+        .header h1 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            color: #666;
+        }
+        
+        .controls {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .controls input {
+            flex: 1;
+            min-width: 200px;
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        
+        .controls button {
+            padding: 10px 20px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background 0.3s;
+        }
+        
+        .controls button:hover {
+            background: #5a67d8;
+        }
+        
+        .controls button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        
+        .table-container {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            overflow-x: auto;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        th {
+            background: #f7f7f7;
+            padding: 15px;
+            text-align: left;
+            color: #333;
+            font-weight: 600;
+            border-bottom: 2px solid #ddd;
+        }
+        
+        td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        tr:hover {
+            background: #f9f9f9;
+        }
+        
+        .status-yes {
+            background: #10b981;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            display: inline-block;
+        }
+        
+        .status-no {
+            background: #ef4444;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            display: inline-block;
+        }
+        
+        .status-unknown {
+            background: #6b7280;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            display: inline-block;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+        
+        .loading:after {
+            content: '.';
+            animation: dots 1.5s steps(3, end) infinite;
+        }
+        
+        @keyframes dots {
+            0%, 20% { content: '.'; }
+            40% { content: '..'; }
+            60%, 100% { content: '...'; }
+        }
+        
+        .error {
+            background: #fee;
+            color: #c00;
+            padding: 20px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        
+        .success {
+            background: #e0f7e0;
+            color: #0a0;
+            padding: 20px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        
+        .stat-card h3 {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+        
+        .stat-card .number {
+            font-size: 36px;
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .broker-badge {
+            background: #e0e7ff;
+            color: #4c51bf;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔍 Affiliate Status Dashboard</h1>
+            <p>Echtzeit-Überwachung des RoboForex Affiliate-Status</p>
+        </div>
+        
+        <div class="stats" id="stats">
+            <div class="stat-card">
+                <h3>Gesamt Accounts</h3>
+                <div class="number" id="totalAccounts">0</div>
+            </div>
+            <div class="stat-card">
+                <h3>Affiliate: YES</h3>
+                <div class="number" style="color: #10b981;" id="affiliateYes">0</div>
+            </div>
+            <div class="stat-card">
+                <h3>Affiliate: NO</h3>
+                <div class="number" style="color: #ef4444;" id="affiliateNo">0</div>
+            </div>
+            <div class="stat-card">
+                <h3>Status Unbekannt</h3>
+                <div class="number" style="color: #6b7280;" id="affiliateUnknown">0</div>
+            </div>
+        </div>
+        
+        <div class="controls">
+            <input type="text" id="searchInput" placeholder="Account-Nummer suchen...">
+            <button onclick="searchAccount()">🔍 Suchen</button>
+            <button onclick="loadAllData()">🔄 Alle Daten laden</button>
+            <button onclick="exportData()">📥 Export CSV</button>
+        </div>
+        
+        <div id="message"></div>
+        
+        <div class="table-container">
+            <div id="tableContent">
+                <div class="loading">Daten werden geladen</div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        const API_URL = 'https://lic.prophelper.org/api/db_api.php';
+        const API_TOKEN = '250277100311270613';
+        
+        // Beim Laden der Seite
+        window.onload = function() {
+            loadAllData();
+            // Auto-Refresh alle 30 Sekunden
+            setInterval(loadAllData, 30000);
+        };
+        
+        // Alle Daten laden
+        async function loadAllData() {
+            const tableContent = document.getElementById('tableContent');
+            tableContent.innerHTML = '<div class="loading">Daten werden geladen</div>';
+            
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        token: API_TOKEN,
+                        action: 'get_all_affiliate_status',
+                        limit: 500
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.status === 'success' && data.data) {
+                    displayData(data.data);
+                    updateStatistics(data.data);
+                } else {
+                    showError('Fehler beim Laden der Daten: ' + (data.message || 'Unbekannter Fehler'));
+                }
+            } catch (error) {
+                showError('Netzwerkfehler: ' + error.message);
+            }
+        }
+        
+        // Account suchen
+        async function searchAccount() {
+            const searchInput = document.getElementById('searchInput').value.trim();
+            
+            if (!searchInput) {
+                showError('Bitte geben Sie eine Account-Nummer ein');
+                return;
+            }
+            
+            const tableContent = document.getElementById('tableContent');
+            tableContent.innerHTML = '<div class="loading">Suche läuft</div>';
+            
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        token: API_TOKEN,
+                        action: 'get_affiliate_status',
+                        account: searchInput
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    if (data.found) {
+                        displayData([{
+                            account: searchInput,
+                            broker: data.broker,
+                            affiliate_status: data.affiliate_status
+                        }]);
+                        showSuccess('Account gefunden!');
+                    } else {
+                        showError('Account nicht gefunden');
+                    }
+                } else {
+                    showError('Fehler: ' + (data.message || 'Unbekannter Fehler'));
+                }
+            } catch (error) {
+                showError('Netzwerkfehler: ' + error.message);
+            }
+        }
+        
+        // Daten anzeigen
+        function displayData(accounts) {
+            let html = `
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Account</th>
+                            <th>Broker</th>
+                            <th>Programm</th>
+                            <th>Affiliate Status</th>
+                            <th>Hinzugefügt</th>
+                            <th>Letzter Connect</th>
+                            <th>Balance</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+            
+            accounts.forEach(account => {
+                const statusClass = account.affiliate_status === 'yes' ? 'status-yes' : 
+                                  account.affiliate_status === 'no' ? 'status-no' : 'status-unknown';
+                
+                const lastConnect = account.last_connect ? 
+                    new Date(account.last_connect * 1000).toLocaleString('de-DE') : '-';
+                
+                html += `
+                    <tr>
+                        <td><strong>${account.account || '-'}</strong></td>
+                        <td><span class="broker-badge">${account.broker || '-'}</span></td>
+                        <td>${account.programm || '-'}</td>
+                        <td><span class="${statusClass}">${(account.affiliate_status || 'unknown').toUpperCase()}</span></td>
+                        <td>${account.add_date || '-'}</td>
+                        <td>${lastConnect}</td>
+                        <td>${account.balance || '0'} ${account.currency || 'USD'}</td>
+                    </tr>
+                `;
+            });
+            
+            html += `
+                    </tbody>
+                </table>
+            `;
+            
+            document.getElementById('tableContent').innerHTML = html;
+        }
+        
+        // Statistiken aktualisieren
+        function updateStatistics(accounts) {
+            const total = accounts.length;
+            const yes = accounts.filter(a => a.affiliate_status === 'yes').length;
+            const no = accounts.filter(a => a.affiliate_status === 'no').length;
+            const unknown = accounts.filter(a => !a.affiliate_status || a.affiliate_status === 'unknown').length;
+            
+            document.getElementById('totalAccounts').textContent = total;
+            document.getElementById('affiliateYes').textContent = yes;
+            document.getElementById('affiliateNo').textContent = no;
+            document.getElementById('affiliateUnknown').textContent = unknown;
+        }
+        
+        // Fehler anzeigen
+        function showError(message) {
+            document.getElementById('message').innerHTML = `<div class="error">${message}</div>`;
+            setTimeout(() => {
+                document.getElementById('message').innerHTML = '';
+            }, 5000);
+        }
+        
+        // Erfolg anzeigen
+        function showSuccess(message) {
+            document.getElementById('message').innerHTML = `<div class="success">${message}</div>`;
+            setTimeout(() => {
+                document.getElementById('message').innerHTML = '';
+            }, 5000);
+        }
+        
+        // Daten exportieren
+        function exportData() {
+            const table = document.querySelector('table');
+            if (!table) {
+                showError('Keine Daten zum Exportieren vorhanden');
+                return;
+            }
+            
+            let csv = '';
+            const rows = table.querySelectorAll('tr');
+            
+            rows.forEach(row => {
+                const cols = row.querySelectorAll('td, th');
+                const rowData = Array.from(cols).map(col => col.textContent.trim());
+                csv += rowData.join(',') + '\n';
+            });
+            
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.setAttribute('href', url);
+            a.setAttribute('download', 'affiliate_status_' + new Date().toISOString().slice(0,10) + '.csv');
+            a.click();
+            
+            showSuccess('Export erfolgreich!');
+        }
+    </script>
+</body>
+</html>

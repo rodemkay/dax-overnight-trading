@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Account Status - PropHelper</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            padding: 40px;
+            width: 100%;
+            max-width: 1200px;
+        }
+        
+        h1 {
+            color: #333;
+            margin-bottom: 30px;
+            text-align: center;
+            font-size: 2.5em;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 40px;
+            font-size: 1.2em;
+            color: #666;
+        }
+        
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .error {
+            background: #ffebee;
+            color: #c62828;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        
+        .accounts-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        
+        .accounts-table th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+        
+        .accounts-table td {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .accounts-table tr:hover {
+            background: #f5f5f5;
+        }
+        
+        .status-active {
+            background: #4caf50;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            display: inline-block;
+        }
+        
+        .status-inactive {
+            background: #f44336;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            display: inline-block;
+        }
+        
+        .affiliate-yes {
+            background: #2196f3;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            display: inline-block;
+        }
+        
+        .affiliate-no {
+            background: #ff9800;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            display: inline-block;
+        }
+        
+        .affiliate-unknown {
+            background: #9e9e9e;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            display: inline-block;
+        }
+        
+        .refresh-button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 50px;
+            font-size: 1em;
+            cursor: pointer;
+            margin: 20px auto;
+            display: block;
+            transition: transform 0.3s;
+        }
+        
+        .refresh-button:hover {
+            transform: scale(1.05);
+        }
+        
+        .last-update {
+            text-align: center;
+            color: #666;
+            margin-top: 20px;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔐 Account Status Dashboard</h1>
+        
+        <div id="content">
+            <div class="loading">
+                <div class="spinner"></div>
+                <p>Lade Account-Daten...</p>
+            </div>
+        </div>
+        
+        <button class="refresh-button" onclick="loadAccounts()">🔄 Aktualisieren</button>
+        
+        <div class="last-update" id="lastUpdate"></div>
+    </div>
+
+    <script>
+        const API_URL = 'https://lic.prophelper.org/api/db_api.php';
+        const API_TOKEN = '250277100311270613';
+        
+        async function loadAccounts() {
+            const contentDiv = document.getElementById('content');
+            const lastUpdateDiv = document.getElementById('lastUpdate');
+            
+            // Zeige Ladeanzeige
+            contentDiv.innerHTML = `
+                <div class="loading">
+                    <div class="spinner"></div>
+                    <p>Lade Account-Daten...</p>
+                </div>
+            `;
+            
+            try {
+                // API-Anfrage
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        token: API_TOKEN,
+                        action: 'get_all'
+                    })
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                
+                if (data.success && data.data) {
+                    displayAccounts(data.data);
+                } else {
+                    throw new Error(data.error || 'Unbekannter Fehler');
+                }
+                
+                // Update timestamp
+                const now = new Date();
+                lastUpdateDiv.innerHTML = `Letzte Aktualisierung: ${now.toLocaleString('de-DE')}`;
+                
+            } catch (error) {
+                console.error('Fehler beim Laden der Daten:', error);
+                contentDiv.innerHTML = `
+                    <div class="error">
+                        <h3>❌ Fehler beim Laden der Daten</h3>
+                        <p>${error.message}</p>
+                        <p>Bitte versuchen Sie es später erneut.</p>
+                    </div>
+                `;
+            }
+        }
+        
+        function displayAccounts(accounts) {
+            const contentDiv = document.getElementById('content');
+            
+            if (!accounts || accounts.length === 0) {
+                contentDiv.innerHTML = `
+                    <div class="error">
+                        <p>Keine Accounts gefunden.</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            // Sortiere Accounts nach Account-Nummer
+            accounts.sort((a, b) => a.account - b.account);
+            
+            let html = `
+                <table class="accounts-table">
+                    <thead>
+                        <tr>
+                            <th>Account</th>
+                            <th>Name</th>
+                            <th>Status</th>
+                            <th>RoboForex Affiliate</th>
+                            <th>Hardware ID</th>
+                            <th>Lizenz bis</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+            
+            accounts.forEach(account => {
+                const statusClass = account.status === 'active' ? 'status-active' : 'status-inactive';
+                const statusText = account.status === 'active' ? 'Aktiv' : 'Inaktiv';
+                
+                let affiliateClass = 'affiliate-unknown';
+                let affiliateText = 'Unbekannt';
+                
+                if (account.roboaffiliate === 'yes') {
+                    affiliateClass = 'affiliate-yes';
+                    affiliateText = '✅ Ja';
+                } else if (account.roboaffiliate === 'no') {
+                    affiliateClass = 'affiliate-no';
+                    affiliateText = '❌ Nein';
+                } else if (account.roboaffiliate === 'unknown' || !account.roboaffiliate) {
+                    affiliateClass = 'affiliate-unknown';
+                    affiliateText = '❓ Unbekannt';
+                }
+                
+                const endDate = account.end_date ? new Date(account.end_date).toLocaleDateString('de-DE') : '-';
+                
+                html += `
+                    <tr>
+                        <td><strong>${account.account}</strong></td>
+                        <td>${account.name || '-'}</td>
+                        <td><span class="${statusClass}">${statusText}</span></td>
+                        <td><span class="${affiliateClass}">${affiliateText}</span></td>
+                        <td style="font-family: monospace; font-size: 0.9em;">${account.hardwareid || '-'}</td>
+                        <td>${endDate}</td>
+                    </tr>
+                `;
+            });
+            
+            html += `
+                    </tbody>
+                </table>
+            `;
+            
+            // Statistiken
+            const totalAccounts = accounts.length;
+            const activeAccounts = accounts.filter(a => a.status === 'active').length;
+            const affiliateYes = accounts.filter(a => a.roboaffiliate === 'yes').length;
+            const affiliateNo = accounts.filter(a => a.roboaffiliate === 'no').length;
+            const affiliateUnknown = accounts.filter(a => !a.roboaffiliate || a.roboaffiliate === 'unknown').length;
+            
+            html = `
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 30px;">
+                    <div style="background: #f5f5f5; padding: 20px; border-radius: 10px; text-align: center;">
+                        <h3 style="color: #667eea; margin-bottom: 10px;">Gesamt</h3>
+                        <p style="font-size: 2em; font-weight: bold; color: #333;">${totalAccounts}</p>
+                    </div>
+                    <div style="background: #f5f5f5; padding: 20px; border-radius: 10px; text-align: center;">
+                        <h3 style="color: #4caf50; margin-bottom: 10px;">Aktiv</h3>
+                        <p style="font-size: 2em; font-weight: bold; color: #333;">${activeAccounts}</p>
+                    </div>
+                    <div style="background: #f5f5f5; padding: 20px; border-radius: 10px; text-align: center;">
+                        <h3 style="color: #2196f3; margin-bottom: 10px;">Affiliate: Ja</h3>
+                        <p style="font-size: 2em; font-weight: bold; color: #333;">${affiliateYes}</p>
+                    </div>
+                    <div style="background: #f5f5f5; padding: 20px; border-radius: 10px; text-align: center;">
+                        <h3 style="color: #ff9800; margin-bottom: 10px;">Affiliate: Nein</h3>
+                        <p style="font-size: 2em; font-weight: bold; color: #333;">${affiliateNo}</p>
+                    </div>
+                    <div style="background: #f5f5f5; padding: 20px; border-radius: 10px; text-align: center;">
+                        <h3 style="color: #9e9e9e; margin-bottom: 10px;">Unbekannt</h3>
+                        <p style="font-size: 2em; font-weight: bold; color: #333;">${affiliateUnknown}</p>
+                    </div>
+                </div>
+            ` + html;
+            
+            contentDiv.innerHTML = html;
+        }
+        
+        // Lade Daten beim Seitenaufruf
+        window.addEventListener('DOMContentLoaded', () => {
+            loadAccounts();
+        });
+        
+        // Auto-Refresh alle 30 Sekunden
+        setInterval(loadAccounts, 30000);
+    </script>
+</body>
+</html>

@@ -1,0 +1,32 @@
+RewriteBase /
+AddDefaultCharset UTF-8
+#CharsetSourceEnc UTF-8
+#php_flag output_buffering on 
+php_value date.timezone "Europe/Kiev"
+RewriteEngine on
+
+ErrorDocument 404 /404.php
+
+<Files .htaccess>
+order allow,deny
+deny from all
+</Files>
+
+#RewriteCond %{ENV:HTTPS} !on
+#RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+RewriteCond %{HTTP_HOST} ^www\.(.*)$ [NC]
+RewriteRule ^(.*)$ https://%1%{REQUEST_URI} [R=301,QSA,NC,L]
+
+RewriteRule ^metatrader(.*)$ files/metatrader.php$1 [L]
+RewriteRule ^office(.*)$ files/office.php$1 [L]
+RewriteRule ^connect(.*)$ files/connect.php$1 [L]
+
+<IfModule mod_rewrite.c>
+RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+</IfModule>
+
+#RewriteRule ^download(.*)$ download.php$1 [L]
+#RewriteRule ^purchase(.*)$ purchase.php$1 [L]
+
+

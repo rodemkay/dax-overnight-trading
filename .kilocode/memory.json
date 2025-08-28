@@ -1,0 +1,73 @@
+{
+  "version": 1,
+  "language": "de",
+  "rulesFiles": [
+    "KILO_CODE_GUIDE.md",
+    "CLAUDE.md"
+  ],
+  "importantDocs": [
+    "SESSION_SUMMARY.md",
+    "docs/PROJECT_INDEX.md",
+    "docs/TECHNICAL_NOTES_2025-08-05.md",
+    "docs/SESSION_2025-08-05_UPDATES.md",
+    "docs/ENVIRONMENT.md"
+  ],
+  "loadOrder": [
+    ".kilocode/memory.json",
+    "KILO_CODE_GUIDE.md",
+    "CLAUDE.md",
+    "docs/PROJECT_INDEX.md",
+    "SESSION_SUMMARY.md",
+    "CHANGELOG.md"
+  ],
+  "enforcement": {
+    "forceGermanOutput": true,
+    "disallowChromium": true,
+    "preferredBrowser": "firefox"
+  },
+  "machines": {
+    "WIN11NEU": {
+      "os": "Windows 11",
+      "metaTraderRoot": "C:\\portabel\\MetaTrader5",
+      "projectAccess": {
+        "ryzenServerMount": "S:\\",
+        "projectDirViaMount": "S:\\mt5\\daxovernight"
+      }
+    },
+    "RYZENSERVER": {
+      "os": "Ubuntu Linux",
+      "projectDir": "/home/rodemkay/mt5/daxovernight",
+      "alwaysOn": true
+    },
+    "ACERLAPTOP": {
+      "os": "Windows",
+      "access": {
+        "win11neuMetaTrader": "X:\\portabel\\MetaTrader5",
+        "ryzenServerMount": "R:\\",
+        "projectDirViaMount": "R:\\mt5\\daxovernight"
+      },
+      "tools": {
+        "cursor": true,
+        "kiloCode": true
+      }
+    }
+  },
+  "mountMappings": {
+    "S:\\": {
+      "sourceMachine": "WIN11NEU",
+      "targetMachine": "RYZENSERVER",
+      "targetPath": "/home/rodemkay/"
+    },
+    "X:\\": {
+      "sourceMachine": "ACERLAPTOP",
+      "targetMachine": "WIN11NEU",
+      "targetPath": "C:\\portabel\\MetaTrader5"
+    },
+    "R:\\": {
+      "sourceMachine": "ACERLAPTOP",
+      "targetMachine": "RYZENSERVER",
+      "targetPath": "/home/rodemkay/"
+    }
+  },
+  "currentMachine": "WIN11NEU"
+}

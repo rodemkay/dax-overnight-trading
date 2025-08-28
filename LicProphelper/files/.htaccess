@@ -1,0 +1,10 @@
+<FilesMatch "office\.php|connect\.php">
+AuthType Basic
+AuthName "Private zone"
+AuthUserFile /var/www/prophelp/data/www/lic.prophelper.org/files/hpassword
+require valid-user
+</FilesMatch>
+
+<FilesMatch "\.(htaccess|inc\.php)$|hpassword">
+deny from all
+</FilesMatch>
