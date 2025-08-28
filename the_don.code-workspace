@@ -1,0 +1,64 @@
+{
+  "folders": [
+    {
+      "path": ".",
+      "name": "the_don - Main Project"
+    },
+    {
+      "path": "src/EA",
+      "name": "the_don - EA Source"
+    }
+  ],
+  "settings": {
+    // Standard-Projekt für alle Todos
+    "todo.defaultProject": "the_don",
+    "todo.defaultFolder": "the_don",
+    "todo.projects": {
+      "the_don": {
+        "name": "the_don EA Development",
+        "description": "DAX Overnight Trading System v1.10",
+        "color": "#1f6fd0",
+        "icon": "📈",
+        "path": "/home/rodemkay/mt5/daxovernight"
+      }
+    },
+    
+    // Automatische Projekt-Zuweisung
+    "todo.autoAssignProject": true,
+    "todo.defaultAssignment": "the_don",
+    
+    // Todo+ spezifische Einstellungen
+    "todo+.defaultProject": "the_don",
+    "todo+.projects": ["the_don"],
+    "todo+.autoDetectProjects": false,
+    
+    // Better Comments Einstellungen
+    "better-comments.tags": [
+      {
+        "tag": "the_don",
+        "color": "#1f6fd0",
+        "strikethrough": false,
+        "underline": false,
+        "backgroundColor": "transparent",
+        "bold": true,
+        "italic": false
+      },
+      {
+        "tag": "TODO",
+        "color": "#FF8C00",
+        "strikethrough": false,
+        "underline": false,
+        "backgroundColor": "transparent",
+        "bold": false,
+        "italic": false
+      }
+    ]
+  },
+  "extensions": {
+    "recommendations": [
+      "gruntfuggly.todo-tree",
+      "wayou.vscode-todo-highlight",
+      "fabiospampinato.vscode-todo-plus"
+    ]
+  }
+}

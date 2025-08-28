@@ -1,0 +1,25 @@
+# the_don EA Todo Configuration
+# Default project for all new todos
+
+[project]
+name = the_don
+description = DAX Overnight Trading System
+version = 1.10
+default = true
+
+[settings]
+auto_assign = true
+default_tags = the_don, EA, DAX
+default_priority = medium
+default_status = pending
+
+[paths]
+main = /home/rodemkay/mt5/daxovernight
+ea_source = /home/rodemkay/CaufWin11/portabel/MetaTrader5/MQL5/Experts/Don
+scripts = /home/rodemkay/mt5/daxovernight/src/Scripts
+
+[database]
+# Falls deine Todo-App eine DB verwendet
+project_id = the_don
+project_table = todos
+default_project = the_don

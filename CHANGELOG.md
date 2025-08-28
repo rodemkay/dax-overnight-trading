@@ -1,5 +1,18 @@
 # CHANGELOG - the_don EA (DAX Overnight Trading System)
 
+## [1.11] - 2025-08-28
+
+### Fixed
+- **KRITISCHER FIX:** Entfernt hartcodiertes Server-Lizenz Ablaufdatum (17.08.2025)
+- Server-Lizenz zeigt jetzt "✓ Server-Lizenz aktiv" ohne falsches Ablaufdatum
+- Korrigiert negative Tage-Anzeige (-11 Tage etc.)
+
+### Changed
+- UpdateLicenseDisplay() vereinfacht - keine Tage-Berechnung mehr für Server-Lizenz
+- Server-Lizenz Status ist jetzt konsistent über alle Funktionen
+
+---
+
 ## [1.10] - 2025-08-13
 
 ### Added
