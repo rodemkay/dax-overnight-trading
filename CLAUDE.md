@@ -40,7 +40,9 @@ cp the_don.mq5 the_don_v1.24.mq5
 # ... Code editieren ...
 
 # 3. Kompilieren (erzeugt the_don.ex5)
-wine MetaEditor64.exe /compile:MQL5/Experts/Don/the_don.mq5
+# WICHTIG: MetaEditor läuft auf Windows! Kompilierung direkt in Windows MT5
+# Alternativ vom Linux mit Wine (nur für Notfälle):
+# wine MetaEditor64.exe /compile:MQL5/Experts/Don/the_don.mq5
 
 # 4. Git commit & push
 git add -A
@@ -57,15 +59,18 @@ git push origin main
   - `./EA_Entwicklung` → /home/rodemkay/CaufWin11/portabel/MetaTrader5/MQL5/Experts/Don/
 
 ### MetaTrader5 Installationen
-#### 1. Windows-Mount (HAUPTNUTZUNG)
+#### 1. Windows-System (HAUPTNUTZUNG)
 - **Mount-Point:** /home/rodemkay/CaufWin11/ → C:\ auf WIN11NEU (IP: 100.122.144.89)
 - **MT5-Pfad:** /home/rodemkay/CaufWin11/portabel/MetaTrader5/
 - **EA-Pfad:** /home/rodemkay/CaufWin11/portabel/MetaTrader5/MQL5/Experts/Don/
-- **⚠️ WICHTIG:** Dies ist ein Windows-Mount (CIFS)! MetaEditor64.exe läuft auf Windows, KEIN Wine nötig!
+- **⚠️ WICHTIG:** MetaTrader5 und MetaEditor64.exe laufen auf WINDOWS!
+- **⚠️ KOMPILIERUNG:** Erfolgt direkt in Windows MT5, NICHT mit Wine!
+- **Zugriff:** Vom Linux über CIFS-Mount für Datei-Bearbeitung
 
-#### 2. Wine-Installation (ALTERNATIV)
+#### 2. Wine-Installation (NUR NOTFALL)
 - **Pfad:** /home/rodemkay/.wine-mt5/drive_c/Program Files/MetaTrader 5/
-- **Verwendung:** Für Linux-basierte Tests und Kompilierung mit Wine
+- **Verwendung:** NUR als Fallback, wenn Windows-System nicht erreichbar
+- **Hinweis:** Wine-Kompilierung kann Probleme verursachen!
 
 ### Python-Installationen
 - **Windows Python:** /home/rodemkay/CaufWin11/Python313/
