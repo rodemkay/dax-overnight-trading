@@ -3,10 +3,11 @@
 ## 🚀 Overview
 Professional automated trading system for DAX index overnight trading using MetaTrader 5.
 
-### Current Version: **the_don v1.10**
-- **License Code:** THEDON
-- **Program Name:** the_don
+### Current Version: **the_don v1.25 FINAL CLEAN**
+- **License Code:** DERDON
+- **Program Name:** the_don  
 - **Status:** Production Ready
+- **Release Date:** 29.08.2025
 
 ## 📁 Project Structure
 ```
