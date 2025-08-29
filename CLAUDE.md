@@ -6,6 +6,48 @@
 - Direkte Implementierung ohne Orchestrator ist NICHT erlaubt
 - Dies garantiert strukturierte, dokumentierte und koordinierte Entwicklung
 
+## 📁 VERSIONSVERWALTUNG - WICHTIG!
+
+### Bei neuen EA-Versionen (the_don):
+1. **VOR Änderungen:** Backup der aktuellen .mq5 mit Versionsnummer erstellen
+   ```bash
+   cp the_don.mq5 the_don_v1.XX.mq5
+   ```
+
+2. **Nach Kompilierung:**
+   - Die kompilierte .ex5 bleibt IMMER `the_don.ex5` (keine Versionsnummer!)
+   - Nur die .mq5 Backups haben Versionsnummern
+   
+3. **Git Push nach jeder Version:**
+   ```bash
+   git add .
+   git commit -m "Version 1.XX - [Beschreibung der Änderungen]"
+   git push origin main
+   ```
+
+### Warum diese Struktur?
+- **MetaTrader** sieht nur eine `the_don.ex5` (kein Spam im Navigator)
+- **Backups** der .mq5 ermöglichen Rollback zu jeder Version
+- **Git-Historie** dokumentiert alle Änderungen
+- **Saubere Struktur** im EA-Ordner
+
+### Beispiel-Workflow:
+```bash
+# 1. Backup erstellen
+cp the_don.mq5 the_don_v1.24.mq5
+
+# 2. Änderungen machen
+# ... Code editieren ...
+
+# 3. Kompilieren (erzeugt the_don.ex5)
+wine MetaEditor64.exe /compile:MQL5/Experts/Don/the_don.mq5
+
+# 4. Git commit & push
+git add -A
+git commit -m "v1.24 - Fixed multiple positions bug"
+git push origin main
+```
+
 ## System-Umgebung
 
 ### Hauptarbeitsverzeichnis
