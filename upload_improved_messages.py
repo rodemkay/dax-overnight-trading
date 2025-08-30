@@ -11,7 +11,7 @@ from pathlib import Path
 FTP_HOST = "162.55.90.123"
 FTP_USER = "prophelp"
 FTP_PASS = ".Propt333doka?"
-FTP_DIR = "/public_html/files"
+FTP_DIR = "/www/lic.prophelper.org/files"
 
 def upload_file(local_file, remote_name):
     """Datei per FTP hochladen"""
@@ -61,13 +61,9 @@ def main():
     print(f"\n📁 Lokale Datei: {local_file}")
     print(f"🎯 Ziel: {FTP_HOST}:{FTP_DIR}/metatrader.php")
     
-    # Sicherheitsabfrage
+    # Auto-Upload ohne Abfrage (für automatische Ausführung)
     print("\n⚠️  ACHTUNG: Dies wird die Live-Datei auf dem Server überschreiben!")
-    response = input("Fortfahren? (ja/nein): ").lower()
-    
-    if response != 'ja':
-        print("❌ Upload abgebrochen")
-        return
+    print("🚀 Auto-Upload aktiviert...")
     
     # Upload durchführen
     if upload_file(local_file, "metatrader.php"):
